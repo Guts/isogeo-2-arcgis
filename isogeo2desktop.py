@@ -26,27 +26,51 @@ import ConfigParser  # to manipulate options.ini file
 import logging      # log files
 from logging.handlers import RotatingFileHandler
 
+import sys
+
+# 3rd party libraries
+try:
+    import arcpy
+    print("Great! ArcGIS is well installed.")
+except ImportError:
+    print("ArcGIS isn't registered in the sys.path")
+    sys.path.append(r'C:\Program Files (x86)\ArcGIS\Desktop10.2\arcpy')
+    sys.path.append(r'C:\Program Files (x86)\ArcGIS\Desktop10.2\bin')
+    sys.path.append(r'C:\Program Files (x86)\ArcGIS\Desktop10.2\ArcToolbox\Scripts')
+    try:
+        from arcpy import env as enviro
+        from arcpy import ListDatasets, ListFeatureClasses, GetCount_management, ListFiles, ListFields, ListRasters, Describe
+        print("ArcGIS has been added to Python path and then imported.")
+    except:
+        print("ArcGIS isn't installed on this computer")
+        sys.exit()
+
+###############################################################################
+########### Log manager ###########
+###################################
+
+# creation and configuration of log file
+# see: http://sametmax.com/ecrire-des-logs-en-python/
+logger = logging.getLogger()
+logging.captureWarnings(True)
+logger.setLevel(logging.DEBUG)  # all errors will be get
+log_form = logging.Formatter('%(asctime)s || %(levelname)s || %(message)s')
+logfile = RotatingFileHandler('isogeo2desktop.log', 'a', 5000000, 1)
+logfile.setLevel(logging.DEBUG)
+logfile.setFormatter(log_form)
+logger.addHandler(logfile)
+logger.info('\t\t ============== Isogeo to desktop =============')  # start
+logger.info('Version: {0}'.format(_version))
+
 ###############################################################################
 ############# Classes #############
 ###################################
-
 
 class isogeo2desktop():
     def __init__(self):
         print('Get your metadata in your GIS!')
 
-        # creation and configuration of log file
-        # see: http://sametmax.com/ecrire-des-logs-en-python/
-        self.logger = logging.getLogger()
-        logging.captureWarnings(True)
-        self.logger.setLevel(logging.DEBUG)  # all errors will be get
-        log_form = logging.Formatter('%(asctime)s || %(levelname)s || %(message)s')
-        logfile = RotatingFileHandler('isogeo2desktop.log', 'a', 5000000, 1)
-        logfile.setLevel(logging.DEBUG)
-        logfile.setFormatter(log_form)
-        self.logger.addHandler(logfile)
-        self.logger.info('\t\t ============== Isogeo to desktop =============')  # start
-        self.logger.info('Version: {0}'.format(_version))
+
 
         # load settings
         self.load_settings()
@@ -72,13 +96,13 @@ class isogeo2desktop():
             def_proxy_pswd = config.get('proxy', 'def_proxy_pswd')
 
             # log
-            # self.logger.info('Last options loaded')
+            # logger.info('Last options loaded')
             return (def_share_id, def_token), (def_proxy_type, def_proxy_host,
                                                def_proxy_port, def_proxy_user,
                                                def_proxy_pswd)
         except:
             # log
-            self.logger.info('First use: previous settings not found.')
+            logger.info('First use: previous settings not found.')
             return None
 
     def save_settings(self):
@@ -105,7 +129,9 @@ class isogeo2desktop():
         config.set('proxy', 'def_proxy_port', proxy_port)
         config.set('proxy', 'def_proxy_user', proxy_user)
         config.set('proxy', 'def_proxy_pswd', proxy_pswd)
-        self.logger.info('Options saved')
+
+        # log
+        logger.info('Options saved')
 
         # End of function
         return config
