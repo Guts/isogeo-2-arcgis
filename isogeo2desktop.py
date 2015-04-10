@@ -26,7 +26,7 @@ import ConfigParser  # to manipulate options.ini file
 import logging      # log files
 from logging.handlers import RotatingFileHandler
 
-import sys
+from sys import exit, path as syspath, platform as opersys
 
 # 3rd party libraries
 try:
@@ -34,16 +34,16 @@ try:
     print("Great! ArcGIS is well installed.")
 except ImportError:
     print("ArcGIS isn't registered in the sys.path")
-    sys.path.append(r'C:\Program Files (x86)\ArcGIS\Desktop10.2\arcpy')
-    sys.path.append(r'C:\Program Files (x86)\ArcGIS\Desktop10.2\bin')
-    sys.path.append(r'C:\Program Files (x86)\ArcGIS\Desktop10.2\ArcToolbox\Scripts')
+    syspath.append(r'C:\Program Files (x86)\ArcGIS\Desktop10.2\arcpy')
+    syspath.append(r'C:\Program Files (x86)\ArcGIS\Desktop10.2\bin')
+    syspath.append(r'C:\Program Files (x86)\ArcGIS\Desktop10.2\ArcToolbox\Scripts')
     try:
         from arcpy import env as enviro
-        from arcpy import ListDatasets, ListFeatureClasses, GetCount_management, ListFiles, ListFields, ListRasters, Describe
+        from arcpy import ImportMetadata_conversion as importMD
         print("ArcGIS has been added to Python path and then imported.")
     except:
         print("ArcGIS isn't installed on this computer")
-        sys.exit()
+        exit()
 
 ###############################################################################
 ########### Log manager ###########
@@ -66,16 +66,16 @@ logger.info('Version: {0}'.format(_version))
 ############# Classes #############
 ###################################
 
-class isogeo2desktop():
+
+class IsogeoToDesktop():
     def __init__(self):
         print('Get your metadata in your GIS!')
-
-
 
         # load settings
         self.load_settings()
 
-        # 
+        # save settings
+        self.save_settings()
 
     def load_settings(self):
         u"""
@@ -109,15 +109,16 @@ class isogeo2desktop():
         u"""
         save last options in order to make the next excution more easy
         """
-        confile = 'options.ini'
+        confile = r'options.ini'
         config = ConfigParser.RawConfigParser()
+
         # add sections
         config.add_section('basics')
         config.add_section('isogeo')
         config.add_section('proxy')
 
         # basics
-        config.set('basics', 'tool_version', version)
+        config.set('basics', 'tool_version', _version)
         config.set('basics', 'OS', opsys)
         config.set('basics', 'last_sync', lastsync)
         # isogeo
@@ -129,6 +130,10 @@ class isogeo2desktop():
         config.set('proxy', 'def_proxy_port', proxy_port)
         config.set('proxy', 'def_proxy_user', proxy_user)
         config.set('proxy', 'def_proxy_pswd', proxy_pswd)
+
+        # Writing the configuration file
+        with open(confile, 'wb') as configfile:
+            config.write(configfile)
 
         # log
         logger.info('Options saved')
