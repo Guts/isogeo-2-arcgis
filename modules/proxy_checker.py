@@ -1,16 +1,5 @@
 #!/usr/bin/env python
 from __future__ import unicode_literals
-#-------------------------------------------------------------------------------
-# Name:        module1
-# Purpose:
-#
-# Author:      cferdaousse
-#
-# Created:     10/04/2015
-# Copyright:   (c) cferdaousse 2015
-# Licence:     <your licence>
-#-------------------------------------------------------------------------------
-
 
 import urllib2
 import socket
