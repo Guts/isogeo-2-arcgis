@@ -74,6 +74,7 @@ class IsogeoToDesktop():
         # load settings
         self.load_settings()
 
+
         # save settings
         self.save_settings()
 

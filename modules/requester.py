@@ -1,36 +1,49 @@
 # -*- coding: UTF-8 -*-
 #!/usr/bin/env python
 from __future__ import unicode_literals
-#-------------------------------------------------------------------------------
-# Name:        Requete
-# Purpose:     Requête sur l'outil de catalogage ISOGEO
+# ------------------------------------------------------------------------------
+# Name:         Proxy checker
+# Purpose:      Just a couple of functions to check various proxy configuration
 #
-# Author:      Marie et Sana
+# Author:       Julien Moura (@geojulien)
 #
-# Created:     10/04/2015
-#-------------------------------------------------------------------------------
+# Python:       2.7.x with arcpy
+# Created:      10/04/2015
+# Updated:      10/04/2015
+#
+# Licence:      GPL 3
+# -----------------------------------------------------------------------------
 
+###############################################################################
+########### Libraries #############
+###################################
+
+# Standard library
 import urllib2
 import json
 import datetime
 import xml.etree.ElementTree as ET
 
-# Proxy de l'ecole
-proxy = urllib2.ProxyHandler({'http': 'http://10.0.4.2:3128'})
-opener = urllib2.build_opener(proxy)
-urllib2.install_opener(opener)
 
-
-
+###############################################################################
+######## Classes #########
+###################################
 
 class Requete:
-
+    """
+    TO COMMENT
+    """
     def __init__(self, forma, url_OpenCatalog):
+        """
+        TO COMMENT
+        """
         self.forma=forma
         self.url_OpenCatalog=url_OpenCatalog
 
     def __sharetoken__(self):
-
+        """
+        TO COMMENT
+        """
         # Isoler l'identifiant du partage
         share_id = self.url_OpenCatalog.rsplit('/')[4]
 
@@ -40,7 +53,9 @@ class Requete:
         return share_token
 
     def __authentification__(self):
-
+        """
+        TO COMMENT
+        """
         # Isoler l'identifiant du partage
         share_id = self.url_OpenCatalog.rsplit('/')[4]
 
@@ -61,7 +76,9 @@ class Requete:
 
 
     def __result__(self):
-
+        """
+        TO COMMENT
+        """
         search_rez= self.__authentification__()
         metadatas = search_rez.get('results')
         
@@ -83,7 +100,9 @@ class Requete:
         return dictionnaire
 
     def __importxml__(self,id):
-
+        """
+        TO COMMENT
+        """
         # Retourne un fichier XML
         share_token=self.__sharetoken__()
         req_xml =urllib2.Request('http://api.isogeo.com/v1.0/resources/{0}.xml?token={1}'.format(id, share_token))
@@ -94,7 +113,6 @@ class Requete:
 
 
 # Se connecter au catalogue de l'utilisateur
-url_OpenCatalog = "http://open.isogeo.com/s/2f6805ccda5f4ffcaaed9aaf813d5201/G5bfYn1icopkDvaBuh82ptlz5Da60"
 
 # Critères de requêtes de l'utilisateur
 forma ="shp"
@@ -103,3 +121,12 @@ essai=Requete(forma, url_OpenCatalog)
 
 print essai.__authentification__()
 #print essai.__result__()
+
+
+###############################################################################
+###### Stand alone program ########
+###################################
+
+if __name__ == '__main__':
+    """ standalone execution for testing """
+    pass
