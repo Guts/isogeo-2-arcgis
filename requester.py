@@ -2,14 +2,12 @@
 #!/usr/bin/env python
 from __future__ import unicode_literals
 #-------------------------------------------------------------------------------
-# Name:        module2
-# Purpose:
+# Name:        Requete
+# Purpose:     Requête sur l'outil de catalogage ISOGEO
 #
-# Author:      smendli
+# Author:      Marie et Sana
 #
 # Created:     10/04/2015
-# Copyright:   (c) smendli 2015
-# Licence:     <your licence>
 #-------------------------------------------------------------------------------
 
 import urllib2
@@ -33,7 +31,7 @@ class Requete:
 
     def __sharetoken__(self):
 
-        # Isoler l?identifiant du partage
+        # Isoler l'identifiant du partage
         share_id = self.url_OpenCatalog.rsplit('/')[4]
 
         # Isoler le token du partage
@@ -43,16 +41,16 @@ class Requete:
 
     def __authentification__(self):
 
-        # Isoler l?identifiant du partage
+        # Isoler l'identifiant du partage
         share_id = self.url_OpenCatalog.rsplit('/')[4]
 
         # Isoler le token du partage
         share_token = self.url_OpenCatalog.rsplit('/')[5]
 
-        # Ecriture de la requ?te ? l'API
+        # Ecriture de la requête à l'API
         search_req =urllib2.Request('http://api.isogeo.com/v1.0/resources/search?ct={0}&s={1}&format%3A{2}'.format(share_token, share_id, self.forma))
 
-        # Envoi de la requ?te dans une boucle de test pour pr?venir les erreurs
+        # Envoi de la requête dans une boucle de test pour prévenir les erreurs
         try:
             search_resp = urllib2.urlopen(search_req)
             search_rez = json.load(search_resp)
@@ -66,7 +64,7 @@ class Requete:
 
         search_rez= self.__authentification__()
         metadatas = search_rez.get('results')
-        print "yoooo"
+        
         dictionnaire={}
         for md in metadatas:
 
@@ -86,7 +84,7 @@ class Requete:
 
     def __importxml__(self):
 
-        # retourne xml
+        # Retourne un fichier XML
         share_token=self.__sharetoken__()
         id = "78e4a2ce9a7d4b09a80eecd131130166"
         req_xml =urllib2.Request('http://api.isogeo.com/v1.0/resources/{0}.xml?token={1}'.format(id, share_token))
@@ -96,14 +94,10 @@ class Requete:
         return xml
 
 
-
-
-# urllib2.urlopen('http://www.isogeo.com/')
-
 # Se connecter au catalogue de l'utilisateur
 url_OpenCatalog = "http://open.isogeo.com/s/2f6805ccda5f4ffcaaed9aaf813d5201/G5bfYn1icopkDvaBuh82ptlz5Da60"
 
-# Crit?res de requ?tes de l'utilisateur
+# Critères de requêtes de l'utilisateur
 forma ="shp"
 
 essai=Requete(forma, url_OpenCatalog)
