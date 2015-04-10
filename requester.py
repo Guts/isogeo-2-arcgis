@@ -82,11 +82,10 @@ class Requete:
             dictionnaire[md.get('_id')] = md.get('title'), dateConver, srs
         return dictionnaire
 
-    def __importxml__(self):
+    def __importxml__(self,id):
 
         # Retourne un fichier XML
         share_token=self.__sharetoken__()
-        id = "78e4a2ce9a7d4b09a80eecd131130166"
         req_xml =urllib2.Request('http://api.isogeo.com/v1.0/resources/{0}.xml?token={1}'.format(id, share_token))
 
         rez_xml = urllib2.urlopen(req_xml)
@@ -104,4 +103,3 @@ essai=Requete(forma, url_OpenCatalog)
 
 print essai.__authentification__()
 #print essai.__result__()
-#print essai.__importxml__()
