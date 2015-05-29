@@ -1,0 +1,3 @@
+[submodule "ArcGIS/arcpy_metadata"]
+	path = ArcGIS/arcpy_metadata
+	url = git://github.com/ucd-cws/arcpy_metadata.git
